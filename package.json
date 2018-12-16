@@ -1,0 +1,23 @@
+{
+  "name": "covered",
+  "version": "1.0.0",
+  "description": "Covered code extraction for Chrome code coverage report",
+  "main": "covered.js",
+  "dependencies": {
+    "colors": "^1.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergeychernyshev/covered.git"
+  },
+  "author": "Sergey Chernyshev",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/sergeychernyshev/covered/issues"
+  },
+  "homepage": "https://github.com/sergeychernyshev/covered#readme"
+}
