@@ -10,6 +10,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "covered": "./covered.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sergeychernyshev/covered.git"
