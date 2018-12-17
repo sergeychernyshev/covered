@@ -28,7 +28,36 @@ coverage_report.forEach((asset, index) => {
     file_name = `${folder_name}.html`;
   }
 
-  const covered = asset.ranges
+  // dedupe ranges
+  const deduped_ranges = asset.ranges.reduce((ranges, range) => {
+    let overlapped = false;
+
+    const deduped = ranges.map(existing_range => {
+      if (
+        (existing_range.start >= range.start &&
+          existing_range.start <= range.end) ||
+        (existing_range.end >= range.start && existing_range.end <= range.end)
+      ) {
+        overlapped = true;
+      }
+
+      return overlapped
+        ? {
+            start: Math.min(existing_range.start, range.start),
+            end: Math.max(existing_range.end, range.end)
+          }
+        : existing_range;
+    });
+
+    // if not overlapped, add it as is to existing ranges
+    if (!overlapped) {
+      deduped.push(range);
+    }
+
+    return deduped;
+  }, []);
+
+  const covered = deduped_ranges
     .map(range => asset.text.substring(range.start, range.end))
     .join("");
 
@@ -41,7 +70,9 @@ coverage_report.forEach((asset, index) => {
   const percentage = parseInt(covered.length * 100) / asset.text.length;
 
   const color =
-    percentage === 100
+    percentage > 100
+      ? colors.bgRed
+      : percentage === 100
       ? colors.green
       : percentage > 90
       ? colors.yellow
