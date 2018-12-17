@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 const fs = require("fs");
 const url = require("url");
 const path = require("path");
 const colors = require("colors");
 
-let report_filename = path.basename(process.argv[2]);
+let report_filename = process.argv[2];
 
 const coverage = fs.readFileSync(report_filename, "utf8");
 const coverage_report = JSON.parse(coverage);
@@ -25,7 +27,7 @@ coverage_report.forEach((asset, index) => {
 
   let file_name = path.basename(pathname);
   if (!file_name) {
-    file_name = `${folder_name}.html`;
+    file_name = `${path.basename(folder_name)}.html`;
   }
 
   // dedupe ranges
