@@ -31,42 +31,46 @@ coverage_report.forEach((asset, index) => {
   }
 
   // dedupe ranges
-  const deduped_ranges = asset.ranges.reduce((ranges, range) => {
-    let overlapped = false;
+  const deduped_ranges = asset.ranges
+    .sort((a, b) => a.start - b.start)
+    .reduce((ranges, range) => {
+      let overlapped = false;
 
-    const deduped = ranges.map(existing_range => {
-      if (
-        (existing_range.start >= range.start &&
-          existing_range.start <= range.end) ||
-        (existing_range.end >= range.start && existing_range.end <= range.end)
-      ) {
-        overlapped = true;
-      }
+      const deduped = ranges.map(existing_range => {
+        let new_range = existing_range;
 
-      return overlapped
-        ? {
+        if (
+          (existing_range.start >= range.start &&
+            existing_range.start <= range.end) ||
+          (existing_range.end >= range.start && existing_range.end <= range.end)
+        ) {
+          new_range = {
             start: Math.min(existing_range.start, range.start),
             end: Math.max(existing_range.end, range.end)
-          }
-        : existing_range;
-    });
+          };
 
-    // if not overlapped, add it as is to existing ranges
-    if (!overlapped) {
-      deduped.push(range);
-    }
+          overlapped = true;
+        }
 
-    return deduped;
-  }, []);
+        return new_range;
+      });
+
+      // if not overlapped, add it as is to existing ranges
+      if (!overlapped) {
+        deduped.push(range);
+      }
+
+      return deduped;
+    }, []);
 
   const covered = deduped_ranges
     .map(range => asset.text.substring(range.start, range.end))
     .join("");
 
-  const output_filename = `${covered_folder_name}/${file_name}`;
+  const covered_filename = `${covered_folder_name}/${file_name}`;
   const original_filename = `${original_folder_name}/${file_name}`;
 
-  fs.writeFileSync(output_filename, covered);
+  fs.writeFileSync(covered_filename, covered);
   fs.writeFileSync(original_filename, asset.text);
 
   const percentage = parseInt(covered.length * 100) / asset.text.length;
@@ -83,7 +87,7 @@ coverage_report.forEach((asset, index) => {
   console.log(
     asset.url,
     colors.grey("->"),
-    output_filename,
+    covered_filename,
     colors.grey("@"),
     color(parseInt(percentage) + "%")
   );
