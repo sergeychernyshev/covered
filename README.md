@@ -1,6 +1,7 @@
 # Covered code extractor for Chrome
 
 Chrome 73 now supports export of [code coverage report](https://developers.google.com/web/updates/2017/04/devtools-release-notes) available since Chrome 59.
+![export button in Chrome 73](docs/export_button.png)
 
 ## Usage
 
